@@ -158,12 +158,13 @@
 
 ### 1차 완성본에 대한 기능적/비기능적 요구사항을 커버하는지 검증
 
-![image](https://user-images.githubusercontent.com/487999/79684167-3ecd2f00-826a-11ea-806a-957362d197e3.png)
+![finished_1](https://user-images.githubusercontent.com/87056402/129170014-e3b68964-607d-4317-a375-3a2b9519e56e.png)
 
-    - 고객이 메뉴를 선택하여 주문한다 (ok)
-    - 고객이 결제한다 (ok)
-    - 주문이 되면 주문 내역이 입점상점주인에게 전달된다 (ok)
-    - 상점주인이 확인하여 요리해서 배달 출발한다 (ok)
+
+    - 고객이 택시를 요청 한다 (ok)
+    - 요청 내역이 택시 기사에게 전달 된다 (ok)
+    - 택시 기사가 고객을 픽업하여 목적지까지 이동 한다(ok)
+    - 운행이 종료되면 자동으로 결제가 진행된다 (ok)
 
 ![image](https://user-images.githubusercontent.com/487999/79684170-47256a00-826a-11ea-9777-e16fafff519a.png)
     - 고객이 주문을 취소할 수 있다 (ok)
