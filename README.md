@@ -126,14 +126,13 @@
 ### 이벤트 도출
 ![이벤트도출](https://user-images.githubusercontent.com/87056402/129153891-8c77c989-43aa-4bdc-bfea-fc4596d2cd65.png)
 
-
-### 액터, 커맨드 부착하여 읽기 좋게
-![image](https://user-images.githubusercontent.com/487999/79683614-4ee30f80-8266-11ea-9a50-68cdff2dcc46.png)
-
+### 이벤트 정리
+### 액터, 커맨드 부착
 ### 어그리게잇으로 묶기
-![image](https://user-images.githubusercontent.com/487999/79683618-52769680-8266-11ea-9c21-48d6812444ba.png)
+![cammandMapping](https://user-images.githubusercontent.com/87056402/129156827-5a7a6fe5-6a1d-40ea-86dc-7fc9ac4a7e88.png)
 
-    - app의 Order, store 의 주문처리, 결제의 결제이력은 그와 연결된 command 와 event 들에 의하여 트랜잭션이 유지되어야 하는 단위로 그들 끼리 묶어줌
+    - TaxiRequest, Receipt의 요청, 접수 생성 및 결제의 결제이력은 그와 연결된 command 와 event 들에 의하여 트랜잭션이 유지되어야 하는 단위로 그들 끼리 묶어줌
+    - 시나리오에서 결제는 운행 종료시 자동 발생함으로 DestinationArrived 사용, PaymentRequested는 삭제
 
 ### 바운디드 컨텍스트로 묶기
 
