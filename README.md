@@ -166,12 +166,11 @@
     - 택시 기사가 고객을 픽업하여 목적지까지 이동 한다(ok)
     - 운행이 종료되면 자동으로 결제가 진행된다 (ok)
 
-![image](https://user-images.githubusercontent.com/487999/79684170-47256a00-826a-11ea-9777-e16fafff519a.png)
-    - 고객이 주문을 취소할 수 있다 (ok)
-    - 주문이 취소되면 배달이 취소된다 (ok)
-    - 고객이 주문상태를 중간중간 조회한다 (View-green sticker 의 추가로 ok) 
-    - 주문상태가 바뀔 때 마다 카톡으로 알림을 보낸다 (?)
+![finished_2_cancel](https://user-images.githubusercontent.com/87056402/129170873-e57d402f-501e-446b-9df4-f019d57bfb5b.png)
 
+    - 택시 기사가 픽업하기 전에만 요청을 취소 할 수 있다. (ok)
+    - 고객이 요청 상태를 중간중간 조회한다. (ok)
+    - 고객 센터는 요청/운행 상태를 조회 할수 있다. (ok) 
 
 ### 모델 수정
 
