@@ -166,17 +166,12 @@
     - 운행이 종료 되면 택시기사가 결제를 진행한다. (ok)
     - 결제가 완료되면 운행 종료 처리를 한다. (ok)
 
-![finished_2_cancel](https://user-images.githubusercontent.com/87056402/129170873-e57d402f-501e-446b-9df4-f019d57bfb5b.png)
+![완성1차검증2](https://user-images.githubusercontent.com/87056402/131514232-0cbcf386-d3ed-4205-beba-62daf204a251.png)
 
-    - 택시 기사가 픽업하기 전에만 요청을 취소 할 수 있다. (ok)
+    - 택시 요청을 취소하면 접수도 취소 된다. (ok)
     - 고객이 요청 상태를 중간중간 조회한다. (ok)
-    - 고객 센터는 요청/운행 상태를 조회 할수 있다. (ok) 
-
-### 모델 수정
-
-![image](https://user-images.githubusercontent.com/487999/79684176-4e4c7800-826a-11ea-8deb-b7b053e5d7c6.png)
+    - 고객 센터는 요청/운행 상태를 조회 할수 있다. (ok)
     
-    - 수정된 모델은 모든 요구사항을 커버함.
 
 ### 비기능 요구사항에 대한 검증
 
