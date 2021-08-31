@@ -151,10 +151,10 @@
 
 ### 완성된 1차 모형
 
-![finished_1](https://user-images.githubusercontent.com/87056402/129167168-a974a3c5-b38d-4404-9d32-7d5e11d5f75a.png)
-
-    - View Model 추가
-    - ReceiptCanceled Event 수신처가 없기 때문에 삭제
+![1차완성모델](https://user-images.githubusercontent.com/87056402/131509212-9306cbf4-a9fc-4835-b273-db2fb1808a7e.png)
+   
+   - View Model 추가
+    
 
 ### 1차 완성본에 대한 기능적/비기능적 요구사항을 커버하는지 검증
 
