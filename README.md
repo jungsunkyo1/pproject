@@ -145,10 +145,6 @@
         - General Domain:   pay : 결제서비스로 3rd Party 외부 서비스를 사용하는 것이 경쟁력이 높음 (핑크색으로 이후 전환할 예정)
 
 ### 폴리시의 이동과 컨텍스트 매핑 (점선은 Pub/Sub, 실선은 Req/Resp)
-
-![policymapping](https://user-images.githubusercontent.com/87056402/129164450-c69f7ab9-da90-452d-9306-f71d48764326.png)
-
-
 ### 완성된 1차 모형
 
 ![1차완성모델](https://user-images.githubusercontent.com/87056402/131509212-9306cbf4-a9fc-4835-b273-db2fb1808a7e.png)
