@@ -229,6 +229,89 @@ python policy-handler.py
 ![조회결과](https://user-images.githubusercontent.com/87056402/131789421-b1de022f-507d-466c-927d-c72fb0b82db2.png)
 
 
+## API GATEWAY
+
+- 각 서비스들의 진입점을 하나로 만들기 위해 Api GateWay 적용
+- Spring cloud Gateway 사용
+
+#application.yaml 예시
+```
+server:
+  port: 8088
+
+---
+
+spring:
+  profiles: default
+  cloud:
+    gateway:
+      routes:
+        - id: customer
+          uri: http://localhost:8081
+          predicates:
+            - Path=/taxiRequests/**, /requestStatuses/**
+        - id: driver
+          uri: http://localhost:8082
+          predicates:
+            - Path=/reciepts/**, /receiptInfos/**, /api/reciept/**
+        - id: payment
+          uri: http://localhost:8083
+          predicates:
+            - Path=/payments/** 
+        - id: CustomerCenter
+          uri: http://localhost:8084
+          predicates:
+            - Path= /requestAndReceiptInfos/**
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "*"
+            allowedMethods:
+              - "*"
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+
+
+---
+
+spring:
+  profiles: docker
+  cloud:
+    gateway:
+      routes:
+        - id: customer
+          uri: http://customer:8080
+          predicates:
+            - Path=/taxiRequests/** /requestStatuses/**
+        - id: driver
+          uri: http://driver:8080
+          predicates:
+            - Path=/reciepts/** /receiptInfos/**
+        - id: payment
+          uri: http://payment:8080
+          predicates:
+            - Path=/payments/** 
+        - id: CustomerCenter
+          uri: http://CustomerCenter:8080
+          predicates:
+            - Path= /requestAndReceiptInfos/**
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "*"
+            allowedMethods:
+              - "*"
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+
+server:
+  port: 8080
+
+```
 
 ## DDD 의 적용
 
