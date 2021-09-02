@@ -44,19 +44,19 @@ spring:
     gateway:
       routes:
         - id: customer
-          uri: http://customer:8080
+          uri: http://user19-customer:8080
           predicates:
-            - Path=/taxiRequests/** /requestStatuses/**
+            - Path=/taxiRequests/**, /requestStatuses/**
         - id: driver
-          uri: http://driver:8080
+          uri: http://user19-driver:8080
           predicates:
-            - Path=/reciepts/** /receiptInfos/**
+            - Path=/reciepts/**, /receiptInfos/**, /api/reciept/**
         - id: payment
-          uri: http://payment:8080
+          uri: http://user19-payment:8080
           predicates:
             - Path=/payments/** 
         - id: CustomerCenter
-          uri: http://CustomerCenter:8080
+          uri: http://user19-customercenter:8080
           predicates:
             - Path= /requestAndReceiptInfos/**
       globalcors:
