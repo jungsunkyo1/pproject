@@ -656,8 +656,7 @@ ECR Push된 정보 확인
 
 
 k8s Deploy 확인
-
-![deployall](https://user-images.githubusercontent.com/87056402/131812326-bfe23c9b-af9e-47a1-9f8a-8a66e48ece39.png
+![deployall](https://user-images.githubusercontent.com/87056402/131812326-bfe23c9b-af9e-47a1-9f8a-8a66e48ece39.png)
 
 
 
