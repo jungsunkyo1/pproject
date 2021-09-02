@@ -313,6 +313,33 @@ server:
 
 ```
 
+## Correlation
+
+- Customer App과 Dirver App 서비스 사이에 requestId를 Correlation Key로 사용하여 요청 및 취소에 보상 로직을 적용.
+
+```
+# CustomerApp에서 Request 생성
+http POST http://localhost:8088/taxiRequests startingPoint="seoul" destination="ulsan" headcount=3 phoneNumber="010123456"
+
+
+#Driver App에서도 Request에 대한 데이터 생성 확인
+http http://localhost:8088/reciepts
+
+
+# CustomerApp에서 Reuqest 삭제
+http DELETE http://localhost:8088/taxiRequests/1
+
+#Dirver App에서도 데이터 삭제 확인
+http http://localhost:8088/reciepts
+
+#Customer App에서 Canceled로 상태 업데이트된것 확인
+http http://localhost:8088/requestStatuses
+```
+![11111](https://user-images.githubusercontent.com/87056402/131799377-f34bbc04-f98f-46c8-a15c-b811e3fed147.png)
+
+
+
+
 ## DDD 의 적용
 
 - 각 서비스내에 도출된 핵심 Aggregate Root 객체를 Entity 로 선언하였다: (예시는 Customer 마이크로 서비스). 이때 가능한 현업에서 사용하는 언어 (유비쿼터스 랭귀지)를 그대로 사용하려고 노력했다.
