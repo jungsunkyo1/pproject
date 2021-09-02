@@ -1,7 +1,7 @@
 package taxi;
 
 import javax.persistence.*;
-
+//test
 @Entity
 @Table(name="ReceiptInfo_table")
 public class ReceiptInfo {
