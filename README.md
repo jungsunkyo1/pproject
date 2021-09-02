@@ -217,12 +217,15 @@ python policy-handler.py
 - 각 서비스내에 필요한 조회 화면(Customer, Driver, CustomerCenter)은 CQRS로 구현 하였다
 
 - 조회할 데이터에 대한 모델 생성
+
 ![model](https://user-images.githubusercontent.com/87056402/131789356-4c70a023-cc8c-4b8c-b3be-3e91e4125b4e.png)
 
 - Kafka Event를 수신하여서 조회 데이터를 저장
+
 ![eventhandler](https://user-images.githubusercontent.com/87056402/131789403-2dc04858-43ac-47f6-b9dd-13b4ccb1648f.png)
 
 - 저장된 Data 조회
+
 ![조회결과](https://user-images.githubusercontent.com/87056402/131789421-b1de022f-507d-466c-927d-c72fb0b82db2.png)
 
 
