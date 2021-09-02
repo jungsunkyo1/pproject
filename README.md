@@ -336,13 +336,13 @@ public interface RequestAndReceiptInfoRepository extends CrudRepository<RequestA
 		</dependency>
 
 
-
+```
 # DB 조회 결과
 
 ![스크린샷, 2021-09-02 14-35-49](https://user-images.githubusercontent.com/87056402/131788316-801ef874-b121-46ff-808c-33c6c002974b.png)
 
 
-```
+
 
 
 ## 동기식 호출 과 Fallback 처리
