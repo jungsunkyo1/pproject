@@ -383,23 +383,47 @@ public interface PaymentService {
     }
 ```
 
-- 동기식 호출에서는 호출 시간에 따른 타임 커플링이 발생하며, 결제 시스템이 장애가 나면 운행종료처리 되지 않는 것을 확인
+- 동기식 호출에서는 호출 시간에 따른 타임 커플링이 발생하며, 결제 시스템이 장애가 나면 목적지 도착 처리도 되지 않는 것을 확인
 
 
 ```
 # 결제 (pay) 서비스를 잠시 내려놓음 (ctrl+c)
 
-#주문처리
-http localhost:8081/orders item=통닭 storeId=1   #Fail
-http localhost:8081/orders item=피자 storeId=2   #Fail
+#도착 처리
+http http://localhost:8088/api/reciept/arrivedestination?requestId=1&price=1000   #Fail
+
+#상태 변경되지 않음
+                "carNumber": "12d345",
+                "destination": "ulsan",
+                "driverName": "jsk",
+                "headcount": 3,
+                "phoneNumber": "010123456",
+                "price": null,
+                "recieptId": 1,
+                "requestId": 1,
+                "startingPoint": "seoul",
+                "status": "Accepted"
 
 #결제서비스 재기동
 cd 결제
 mvn spring-boot:run
 
-#주문처리
-http localhost:8081/orders item=통닭 storeId=1   #Success
-http localhost:8081/orders item=피자 storeId=2   #Success
+#도착 처리
+http http://localhost:8088/api/reciept/arrivedestination?requestId=1&price=1000   #Success
+
+#상태 변경됨
+                "carNumber": "12d345",
+                "destination": "ulsan",
+                "driverName": "jsk",
+                "headcount": 3,
+                "phoneNumber": "010123456",
+                "price": 1000,
+                "recieptId": 1,
+                "requestId": 1,
+                "startingPoint": "seoul",
+                "status": "Finished"
+
+
 ```
 
 - 또한 과도한 요청시에 서비스 장애가 도미노 처럼 벌어질 수 있다. (서킷브레이커, 폴백 처리는 운영단계에서 설명한다.)
