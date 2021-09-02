@@ -792,124 +792,42 @@ siege -c10 -t10s -v "http://user19-gateway:8080/payments"
 
 - seige 로 배포작업 직전에 워크로드를 모니터링 함.
 ```
-siege -c100 -t120S -r10 --content-type "application/json" 'http://localhost:8081/orders POST {"item": "chicken"}'
-
-** SIEGE 4.0.5
-** Preparing 100 concurrent users for battle.
-The server is now under siege...
-
-HTTP/1.1 201     0.68 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     0.68 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     0.70 secs:     207 bytes ==> POST http://localhost:8081/orders
-HTTP/1.1 201     0.70 secs:     207 bytes ==> POST http://localhost:8081/orders
-:
+siege -c5 -t200s -v "http://user19-gateway:8080/reciepts"
 
 ```
 
-- 새버전으로의 배포 시작
-```
-kubectl set image ...
-```
+Driver Service 신규 버전으로 배포
 
-- seige 의 화면으로 넘어가서 Availability 가 100% 미만으로 떨어졌는지 확인
-```
-Transactions:		        3078 hits
-Availability:		       70.45 %
-Elapsed time:		       120 secs
-Data transferred:	        0.34 MB
-Response time:		        5.60 secs
-Transaction rate:	       17.15 trans/sec
-Throughput:		        0.01 MB/sec
-Concurrency:		       96.02
-
-```
-배포기간중 Availability 가 평소 100%에서 70% 대로 떨어지는 것을 확인. 원인은 쿠버네티스가 성급하게 새로 올려진 서비스를 READY 상태로 인식하여 서비스 유입을 진행한 것이기 때문. 이를 막기위해 Readiness Probe 를 설정함:
-
-```
-# deployment.yaml 의 readiness probe 의 설정:
-
-
-kubectl apply -f kubernetes/deployment.yaml
-```
-
-- 동일한 시나리오로 재배포 한 후 Availability 확인:
-```
-Transactions:		        3078 hits
-Availability:		       100 %
-Elapsed time:		       120 secs
-Data transferred:	        0.34 MB
-Response time:		        5.60 secs
-Transaction rate:	       17.15 trans/sec
-Throughput:		        0.01 MB/sec
-Concurrency:		       96.02
-
-```
+![dd](https://user-images.githubusercontent.com/87056402/131833665-cac54743-9724-49f7-8a7e-296c6aeac667.png)
 
 배포기간 동안 Availability 가 변화없기 때문에 무정지 재배포가 성공한 것으로 확인됨.
 
 
-# 신규 개발 조직의 추가
 
-  ![image](https://user-images.githubusercontent.com/487999/79684133-1d6c4300-826a-11ea-94a2-602e61814ebf.png)
+## Liveness Probe
 
+테스트를 위해 buildspec.yml을 아래와 같이 수정 후 배포
 
-## 마케팅팀의 추가
-    - KPI: 신규 고객의 유입률 증대와 기존 고객의 충성도 향상
-    - 구현계획 마이크로 서비스: 기존 customer 마이크로 서비스를 인수하며, 고객에 음식 및 맛집 추천 서비스 등을 제공할 예정
-
-## 이벤트 스토밍 
-    ![image](https://user-images.githubusercontent.com/487999/79685356-2b729180-8273-11ea-9361-a434065f2249.png)
-
-
-## 헥사고날 아키텍처 변화 
-
-![image](https://user-images.githubusercontent.com/487999/79685243-1d704100-8272-11ea-8ef6-f4869c509996.png)
-
-## 구현  
-
-기존의 마이크로 서비스에 수정을 발생시키지 않도록 Inbund 요청을 REST 가 아닌 Event 를 Subscribe 하는 방식으로 구현. 기존 마이크로 서비스에 대하여 아키텍처나 기존 마이크로 서비스들의 데이터베이스 구조와 관계없이 추가됨. 
-
-## 운영과 Retirement
-
-Request/Response 방식으로 구현하지 않았기 때문에 서비스가 더이상 불필요해져도 Deployment 에서 제거되면 기존 마이크로 서비스에 어떤 영향도 주지 않음.
-
-* [비교] 결제 (pay) 마이크로서비스의 경우 API 변화나 Retire 시에 app(주문) 마이크로 서비스의 변경을 초래함:
-
-예) API 변화시
 ```
-# Order.java (Entity)
-
-    @PostPersist
-    public void onPostPersist(){
-
-        fooddelivery.external.결제이력 pay = new fooddelivery.external.결제이력();
-        pay.setOrderId(getOrderId());
-        
-        Application.applicationContext.getBean(fooddelivery.external.결제이력Service.class)
-                .결제(pay);
-
-                --> 
-
-        Application.applicationContext.getBean(fooddelivery.external.결제이력Service.class)
-                .결제2(pay);
-
-    }
+livenessProbe:
+                      # httpGet:
+                      #   path: /actuator/health
+                      #   port: 8080
+                      exec:
+                        command:
+                        - cat
+                        - /tmp/healthy
 ```
 
-예) Retire 시
+Kail로 이동해서 Health 상태 확인.
+![2](https://user-images.githubusercontent.com/87056402/131837322-f5625880-522d-444f-ab26-b892b39af1d1.png)
+
+
 ```
-# Order.java (Entity)
-
-    @PostPersist
-    public void onPostPersist(){
-
-        /**
-        fooddelivery.external.결제이력 pay = new fooddelivery.external.결제이력();
-        pay.setOrderId(getOrderId());
-        
-        Application.applicationContext.getBean(fooddelivery.external.결제이력Service.class)
-                .결제(pay);
-
-        **/
-    }
+kubectl exec -it pod/user19-customer-6f656b9755-spx5z -n ktaxi -- touch /tmp/healthy
 ```
+
+![1](https://user-images.githubusercontent.com/87056402/131837382-468bf2d9-77af-46eb-bab4-206b589b85cb.png)
+
+
+
