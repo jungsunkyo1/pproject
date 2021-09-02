@@ -1,0 +1,74 @@
+server:
+  port: 8088
+
+---
+
+spring:
+  profiles: default
+  cloud:
+    gateway:
+      routes:
+        - id: customer
+          uri: http://localhost:8081
+          predicates:
+            - Path=/taxiRequests/** /requestStatuses/**
+        - id: driver
+          uri: http://localhost:8082
+          predicates:
+            - Path=/reciepts/** /receiptInfos/**
+        - id: payment
+          uri: http://localhost:8083
+          predicates:
+            - Path=/payments/** 
+        - id: CustomerCenter
+          uri: http://localhost:8084
+          predicates:
+            - Path= /requestAndReceiptInfos/**
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "*"
+            allowedMethods:
+              - "*"
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+
+
+---
+
+spring:
+  profiles: docker
+  cloud:
+    gateway:
+      routes:
+        - id: customer
+          uri: http://customer:8080
+          predicates:
+            - Path=/taxiRequests/** /requestStatuses/**
+        - id: driver
+          uri: http://driver:8080
+          predicates:
+            - Path=/reciepts/** /receiptInfos/**
+        - id: payment
+          uri: http://payment:8080
+          predicates:
+            - Path=/payments/** 
+        - id: CustomerCenter
+          uri: http://CustomerCenter:8080
+          predicates:
+            - Path= /requestAndReceiptInfos/**
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "*"
+            allowedMethods:
+              - "*"
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+
+server:
+  port: 8080
