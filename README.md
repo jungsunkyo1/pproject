@@ -434,86 +434,93 @@ http http://localhost:8088/api/reciept/arrivedestination?requestId=1&price=1000 
 ## 비동기식 호출 / 시간적 디커플링 / 장애격리 / 최종 (Eventual) 일관성 테스트
 
 
-결제가 이루어진 후에 상점시스템으로 이를 알려주는 행위는 동기식이 아니라 비 동기식으로 처리하여 상점 시스템의 처리를 위하여 결제주문이 블로킹 되지 않아도록 처리한다.
+택시 요청은 비 동기식으로 처리하여 드라이버 시스템의 처리를 위하여 블로킹 되지 않아도록 처리한다.
  
-- 이를 위하여 결제이력에 기록을 남긴 후에 곧바로 결제승인이 되었다는 도메인 이벤트를 카프카로 송출한다(Publish)
+- 이를 위하여 택시 요청이 생성되면 기록을 남기고 도메인 이벤트를 카프카로 송출한다(Publish)
  
 ```
-package fooddelivery;
+public class TaxiRequest {
 
-@Entity
-@Table(name="결제이력_table")
-public class 결제이력 {
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private Long id;
+    private String startingPoint;
+    private String destination;
+    private Integer headcount;
+    private String phoneNumber;
 
- ...
-    @PrePersist
-    public void onPrePersist(){
-        결제승인됨 결제승인됨 = new 결제승인됨();
-        BeanUtils.copyProperties(this, 결제승인됨);
-        결제승인됨.publish();
+    @PostPersist
+    public void onPostPersist(){
+        TaxiRequsted taxiRequsted = new TaxiRequsted();
+        BeanUtils.copyProperties(this, taxiRequsted);
+        taxiRequsted.publishAfterCommit();
+
     }
-
-}
+    
+    ...생략
 ```
-- 상점 서비스에서는 결제승인 이벤트에 대해서 이를 수신하여 자신의 정책을 처리하도록 PolicyHandler 를 구현한다:
+- 드라이버 서비스에서는 이를 수신하여 자신의 정책을 처리하도록 PolicyHandler 를 구현한다:
 
 ```
-package fooddelivery;
-
-...
-
 @Service
 public class PolicyHandler{
+    @Autowired RecieptRepository recieptRepository;
 
     @StreamListener(KafkaProcessor.INPUT)
-    public void whenever결제승인됨_주문정보받음(@Payload 결제승인됨 결제승인됨){
+    public void wheneverTaxiRequsted_ReceiveRequest(@Payload TaxiRequsted taxiRequsted){
 
-        if(결제승인됨.isMe()){
-            System.out.println("##### listener 주문정보받음 : " + 결제승인됨.toJson());
-            // 주문 정보를 받았으니, 요리를 슬슬 시작해야지..
-            
-        }
+        if(!taxiRequsted.validate()) return;
+
+        System.out.println("\n\n##### listener ReceiveRequest : " + taxiRequsted.toJson() + "\n\n");
+
+        // Sample Logic //
+        Reciept reciept = new Reciept();
+        reciept.setRequestId(taxiRequsted.getId());
+        recieptRepository.save(reciept);
+
     }
 
-}
+...생략
 
+택시 요청 시스템과 드라이버 시스템은 분리되어, 이벤트 수신에 따라 처리되기 때문에, 드라이버시스템이 유지보수로 인해 잠시 내려간 상태라도 택시 요청을 받는데 문제가 없다:
 ```
-실제 구현을 하자면, 카톡 등으로 점주는 노티를 받고, 요리를 마친후, 주문 상태를 UI에 입력할테니, 우선 주문정보를 DB에 받아놓은 후, 이후 처리는 해당 Aggregate 내에서 하면 되겠다.:
-  
-```
-  @Autowired 주문관리Repository 주문관리Repository;
-  
-  @StreamListener(KafkaProcessor.INPUT)
-  public void whenever결제승인됨_주문정보받음(@Payload 결제승인됨 결제승인됨){
+# 드라이버 서비스 (driver) 를 잠시 내려놓음 (ctrl+c)
 
-      if(결제승인됨.isMe()){
-          카톡전송(" 주문이 왔어요! : " + 결제승인됨.toString(), 주문.getStoreId());
+#요청 처리
+http POST http://localhost:8088/taxiRequests startingPoint="seoul" destination="ulsan" headcount=3 phoneNumber="010123456"   #Success
 
-          주문관리 주문 = new 주문관리();
-          주문.setId(결제승인됨.getOrderId());
-          주문관리Repository.save(주문);
-      }
-  }
+#상태 확인
+               "carNumber": null,
+                "destination": "ulsan",
+                "driverName": null,
+                "headcount": 3,
+                "phoneNumber": "010123456",
+                "price": null,
+                "recieptId": null,
+                "requestId": 1,
+                "startingPoint": "seoul",
+                "status": "Cancel Requested"
 
-```
 
-상점 시스템은 주문/결제와 완전히 분리되어있으며, 이벤트 수신에 따라 처리되기 때문에, 상점시스템이 유지보수로 인해 잠시 내려간 상태라도 주문을 받는데 문제가 없다:
-```
-# 상점 서비스 (store) 를 잠시 내려놓음 (ctrl+c)
-
-#주문처리
-http localhost:8081/orders item=통닭 storeId=1   #Success
-http localhost:8081/orders item=피자 storeId=2   #Success
-
-#주문상태 확인
-http localhost:8080/orders     # 주문상태 안바뀜 확인
 
 #상점 서비스 기동
 cd 상점
 mvn spring-boot:run
 
-#주문상태 확인
-http localhost:8080/orders     # 모든 주문의 상태가 "배송됨"으로 확인
+#드라이버 요청 리스트 확인
+http http://localhost:8088/receiptInfos     # 신규 요청이 생성된것 확인
+
+
+                "carNumber": null,
+                "destinationPoint": "ulsan",
+                "headcount": 3,
+                "phoneNumber": "010123456",
+                "price": null,
+                "requestId": 1,
+                "startingPoint": "seoul",
+                "status": "Requsted"
+
+
 ```
 
 
