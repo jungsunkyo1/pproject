@@ -643,6 +643,49 @@ http http://localhost:8088/receiptInfos     # 신규 요청이 생성된것 확�
 각 구현체들은 각자의 source repository 에 구성되었고, 사용한 CI/CD 플랫폼은 GCP를 사용하였으며, pipeline build script 는 각 프로젝트 폴더 이하에 cloudbuild.yml 에 포함되었다.
 
 
+
+### ConfigMap 설정
+
+동기 호출 URL을 ConfigMap을 사용하여 설정
+
+kubectl apply -f configmap
+```
+ apiVersion: v1
+ kind: ConfigMap
+ metadata:
+   name: ktaxi-configmap
+   namespace: ktaxi
+ data:
+   apiurl: "http://user19-gateway:8080"
+```
+
+driver의 builspec.yml 수정
+
+```
+              spec:
+                containers:
+                  - name: $_PROJECT_NAME
+                    image: $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$_PROJECT_NAME:$CODEBUILD_RESOLVED_SOURCE_VERSION
+                    ports:
+                      - containerPort: 8080
+                    env:
+                    - name: apiurl
+                      valueFrom:
+                        configMapKeyRef:
+                          name: ktaxi-configmap
+                          key: apiurl 
+
+```
+
+application.yml 수정
+
+```
+prop:
+  payment:
+    url: ${apiurl}
+```
+
+
 ## 동기식 호출 / 서킷 브레이킹 / 장애격리
 
 * 서킷 브레이킹 프레임워크의 선택: Spring FeignClient + Hystrix 옵션을 사용하여 구현함
