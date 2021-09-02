@@ -8,7 +8,6 @@ import java.util.List;
 public class RequestStatus {
 
         @Id
-        @GeneratedValue(strategy=GenerationType.AUTO)
         private Long id;
         private String startingPoint;
         private String destination;

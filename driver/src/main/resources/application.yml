@@ -38,6 +38,10 @@ logging:
     org.springframework.cloud: debug
 server:
   port: 8082
+
+prop:
+  payment:
+    url: http://localhost:8088
 ---
 
 spring:
@@ -63,3 +67,6 @@ spring:
         event-out:
           destination: taxi
           contentType: application/json
+prop:
+  payment:
+    url: ${apiurl}

@@ -17,7 +17,16 @@ public class ReceiptInfo {
         private String status;
         private Integer price;
         private String carNumber;
+        private Long requestId;
 
+
+        public Long getRequestId() {
+            return requestId;
+        }
+
+        public void setRequestId(Long long1) {
+            this.requestId = long1;
+        }
 
         public Long getId() {
             return id;

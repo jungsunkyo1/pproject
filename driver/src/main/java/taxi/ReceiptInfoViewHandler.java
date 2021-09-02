@@ -30,8 +30,8 @@ public class ReceiptInfoViewHandler {
             receiptInfo.setDestinationPoint(taxiRequsted.getDestination());
             receiptInfo.setHeadcount(taxiRequsted.getHeadcount());
             receiptInfo.setPhoneNumber(taxiRequsted.getPhoneNumber());
+            receiptInfo.setRequestId(taxiRequsted.getId());
             receiptInfo.setStatus("Requsted");
-            receiptInfo.setId(taxiRequsted.getId());
             // view 레파지 토리에 save
             receiptInfoRepository.save(receiptInfo);
 
@@ -110,7 +110,9 @@ public class ReceiptInfoViewHandler {
 
             if( receiptInfoOptional.isPresent()) {
                  ReceiptInfo receiptInfo = receiptInfoOptional.get();
-            // view 객체에 이벤트의 eventDirectValue 를 set 함
+                // view 객체에 이벤트의 eventDirectValue 를 set 함
+                receiptInfo.setStatus("Canceled");
+
                 // view 레파지 토리에 save
                  receiptInfoRepository.save(receiptInfo);
                 }

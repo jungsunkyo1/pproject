@@ -15,7 +15,6 @@ public class TaxiRequest {
     private String startingPoint;
     private String destination;
     private Integer headcount;
-    private String status;
     private String phoneNumber;
 
     @PostPersist
@@ -25,12 +24,11 @@ public class TaxiRequest {
         taxiRequsted.publishAfterCommit();
 
     }
-    @PostUpdate
-    public void onPostUpdate(){
-        RequestCanceled requestCanceled = new RequestCanceled();
-        BeanUtils.copyProperties(this, requestCanceled);
-        requestCanceled.publishAfterCommit();
-
+    @PostRemove
+    public void onPostRemove(){
+            RequestCanceled requestCanceled = new RequestCanceled();
+            BeanUtils.copyProperties(this, requestCanceled);
+            requestCanceled.publishAfterCommit();
     }
     @PrePersist
     public void onPrePersist(){
@@ -64,13 +62,7 @@ public class TaxiRequest {
     public void setHeadcount(Integer headcount) {
         this.headcount = headcount;
     }
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
+ 
     public String getPhoneNumber() {
         return phoneNumber;
     }

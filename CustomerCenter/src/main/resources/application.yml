@@ -10,6 +10,13 @@ spring:
       hibernate:
         show_sql: true
         format_sql: true
+#        ddl-auto: create
+  #   generate-ddl: true
+  # datasource:
+  #   url: jdbc:sqlserver://localhost:1433;databaseName=CustomerCenter
+  #   driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+  #   username: SA
+  #   password: My@strongpassword
   cloud:
     stream:
       kafka:

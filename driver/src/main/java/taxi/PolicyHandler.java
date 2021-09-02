@@ -19,11 +19,10 @@ public class PolicyHandler{
 
         System.out.println("\n\n##### listener ReceiveRequest : " + taxiRequsted.toJson() + "\n\n");
 
-
-
         // Sample Logic //
-        // Reciept reciept = new Reciept();
-        // recieptRepository.save(reciept);
+        Reciept reciept = new Reciept();
+        reciept.setRequestId(taxiRequsted.getId());
+        recieptRepository.save(reciept);
 
     }
     @StreamListener(KafkaProcessor.INPUT)
@@ -36,8 +35,8 @@ public class PolicyHandler{
 
 
         // Sample Logic //
-        // Reciept reciept = new Reciept();
-        // recieptRepository.save(reciept);
+        Reciept reciept = recieptRepository.findByRequestId(requestCanceled.getId()).get();
+        recieptRepository.delete(reciept);
 
     }
 

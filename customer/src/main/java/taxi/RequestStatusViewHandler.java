@@ -31,7 +31,6 @@ public class RequestStatusViewHandler {
             requestStatus.setDestination(taxiRequsted.getDestination());
             requestStatus.setHeadcount(taxiRequsted.getHeadcount());
             requestStatus.setStatus("Requested");
-            requestStatus.setId(taxiRequsted.getId());
             // view 레파지 토리에 save
             requestStatusRepository.save(requestStatus);
 
