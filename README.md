@@ -701,6 +701,10 @@ prop:
     url: ${apiurl}
 ```
 
+api를 호출하는 요청의 200 ok 확인
+![configmap](https://user-images.githubusercontent.com/87056402/131819935-8e6853ed-0d39-4184-99b9-3196157aff9c.png)
+
+
 
 ## 동기식 호출 / 서킷 브레이킹 / 장애격리
 
