@@ -484,8 +484,9 @@ public class PolicyHandler{
 
 택시 요청 시스템과 드라이버 시스템은 분리되어, 이벤트 수신에 따라 처리되기 때문에, 드라이버시스템이 유지보수로 인해 잠시 내려간 상태라도 택시 요청을 받는데 문제가 없다:
 ```
-# 드라이버 서비스 (driver) 를 잠시 내려놓음 (ctrl+c)
 
+#드라이버 서비스 (driver) 를 잠시 내려놓음 (ctrl+c)
+```
 #요청 처리
 http POST http://localhost:8088/taxiRequests startingPoint="seoul" destination="ulsan" headcount=3 phoneNumber="010123456"   #Success
 
