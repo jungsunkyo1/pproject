@@ -640,7 +640,66 @@ http http://localhost:8088/receiptInfos     # 신규 요청이 생성된것 확�
 ## CI/CD 설정
 
 
-각 구현체들은 각자의 source repository 에 구성되었고, 사용한 CI/CD 플랫폼은 GCP를 사용하였으며, pipeline build script 는 각 프로젝트 폴더 이하에 cloudbuild.yml 에 포함되었다.
+각 구현체들은 각자의 source repository 에 구성되었고, 사용한 CI/CD 플랫폼은 AWS를 사용하였으며, pipeline build script 는 각 프로젝트 폴더 이하 buildspec.yml 에 포함되었다.
+
+
+서비스별 CodeBuild Project 생성
+![codebuild](https://user-images.githubusercontent.com/87056402/131811527-ef873dd4-badf-412a-b800-3a0dfead0724.png)
+
+
+WebHook을 통한 실행 확인
+![webhook](https://user-images.githubusercontent.com/87056402/131810909-3c9e5856-d5d5-4e84-8859-135820b255c1.png)
+
+
+ECR Push된 정보 확인
+![ecr](https://user-images.githubusercontent.com/87056402/131811377-26ed63e3-305e-4982-a35d-7e2bd06f2749.png)
+
+
+k8s Deploy 확인
+![deployall](https://user-images.githubusercontent.com/87056402/131812326-bfe23c9b-af9e-47a1-9f8a-8a66e48ece39.png)
+
+
+
+### ConfigMap 설정
+
+동기 호출 URL을 ConfigMap을 사용하여 설정
+
+kubectl apply -f configmap
+```
+ apiVersion: v1
+ kind: ConfigMap
+ metadata:
+   name: ktaxi-configmap
+   namespace: ktaxi
+ data:
+   apiurl: "http://user19-gateway:8080"
+```
+
+driver의 builspec.yml 수정
+
+```
+              spec:
+                containers:
+                  - name: $_PROJECT_NAME
+                    image: $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$_PROJECT_NAME:$CODEBUILD_RESOLVED_SOURCE_VERSION
+                    ports:
+                      - containerPort: 8080
+                    env:
+                    - name: apiurl
+                      valueFrom:
+                        configMapKeyRef:
+                          name: ktaxi-configmap
+                          key: apiurl 
+
+```
+
+application.yml 수정
+
+```
+prop:
+  payment:
+    url: ${apiurl}
+```
 
 
 ## 동기식 호출 / 서킷 브레이킹 / 장애격리
