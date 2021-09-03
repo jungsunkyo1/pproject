@@ -183,6 +183,10 @@
 
 
 
+### 최종 모델
+![최종](https://user-images.githubusercontent.com/87056402/131932690-70019b5b-1d99-4817-810c-adc21a55a39f.png)
+
+
 
 ## 헥사고날 아키텍처 다이어그램 도출
     
